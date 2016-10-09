@@ -1,0 +1,20 @@
+---
+- name: Deploy Application on Ravello
+  connection: local
+  hosts: all
+  gather_facts: no
+  roles:
+    - ravello.lib
+    - ravello.blueprint_deploy
+  vars:
+    ravello:
+      blueprint: automation-workshop-3vqfx-1srv
+      app_base_name: automation-WS-NYC
+      app_list:
+        - app_name: "automation-WS-NYC-01"
+        - app_name: "automation-WS-NYC-02"
+        # - app_name: "automation-WS-NYC-03"
+    ansible_python_interpreter: /usr/local/bin/python
+
+  pre_tasks:
+    - include_vars: "{{ topology_file }}"

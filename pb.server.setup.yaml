@@ -1,0 +1,120 @@
+---
+- name: Install Automation Tools on Ubuntu
+  hosts: server
+  become: true
+  tasks:
+
+##########################################
+### Update User Account
+##########################################
+  - name: Add password for user UBUNTU
+    user:
+      name: ubuntu
+      password: $6$AaIDkR2Gy$CpjSw.1OTou23E/Cy6qX.Ayniyx7d2r0Ou/tM1TMOCmlX0mahq4whlvfv9QGsnQ3PWY0LlRTQ3Sz3EyyiUp3u1
+
+  - name: Update SSH conf to allow password
+    lineinfile:
+      dest: /etc/ssh/sshd_config
+      state: absent
+      regexp: "^PasswordAuthentication no"
+    become: true
+
+  - name: Reload SSHD config
+    service: name=ssh state=reloaded
+
+##########################################
+### Configure ETH1
+##########################################
+  - name: Configure additional Interfaces
+    template:
+      src: templates/ubuntu.eth.cfg.j2
+      dest: "/etc/network/interfaces.d/{{ item.int }}.cfg"
+    with_items:
+      - int: eth1
+        ip: 192.168.0.254
+        mask: 255.255.255.0
+
+  - name: Restart Interfaces (down)
+    command: ifdown {{ item.int }}
+    become: true
+    with_items:
+      - int: eth1
+
+  - name: Restart Interfaces (up)
+    command: ifup {{ item.int }}
+    become: true
+    with_items:
+      - int: eth1
+
+##########################################
+### Update APT and Install PIP
+##########################################
+  - name: Update apt-get cache
+    apt: update_cache=yes cache_valid_time=3600
+
+  - name: Install Packages with APT
+    apt: name={{ item }} state=present
+    with_items:
+      - python-simplejson
+      - python-support
+      - python-dev
+      - python-yaml
+      - python-pip
+      - python-dev
+      - libxml2-dev
+      - libxslt-dev
+      - tcpdump
+      - tree
+      - zlib1g-dev
+      - libffi-dev
+      - libssl-dev
+      - python-pycurl
+      - apt-transport-https
+      - ca-certificates
+
+##########################################
+### Install  PYEZ
+##########################################
+
+  - name: Install cryptography
+    command: pip install cryptography==1.2.1
+    become: true
+
+  - name: Install Libraries with PIP
+    pip: name={{ item }}
+    with_items:
+      - junos-eznc
+      - lxml
+      - jxmlease
+      - ansible
+      - markupsafe
+
+##########################################
+### Install Ansible Galaxy roles
+##########################################
+
+  - name: Install Juniper Junos Galaxy Role
+    command: ansible-galaxy install Juniper.junos
+    become: true
+
+##########################################
+### Install Docker
+##########################################
+
+  - name: Install apt-key
+    command: apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D
+    become: true
+
+  - name: Install Docker repo
+    apt_repository: repo='deb https://apt.dockerproject.org/repo ubuntu-trusty main' state=present
+
+  - name: Install Packages required for Docker with APT
+    apt: name={{ item }} state=present
+    with_items:
+      #- linux-image-extra-$(uname -r)
+      - linux-image-extra-virtual
+
+  - name: Install Docker
+    apt: name={{ item }} state=present
+    with_items:
+      - docker-engine

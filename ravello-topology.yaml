@@ -1,0 +1,85 @@
+
+########################################################################
+# System variable used to define temporary directory
+# please update tmp_dir variable if needed
+########################################################################
+tmp_dir: /tmp/build
+build_dir: "{{ tmp_dir }}/{{ inventory_hostname }}/tmp"
+junos_conf: "config/{{ inventory_hostname }}.conf"
+
+################################################################################
+# Global Variables used to generate the common part of the configuration
+# please update these variable and the template as needed to match your environment
+################################################################################
+ravello:
+  app_name: "Workshop NYC 20161012"
+
+dhcp_mgmt_int: true   # Specific to Ravello
+
+global:
+    root_hash: $1$Dkb4BkC8$GCjPFT.M7BySAEPCbcbxz1
+    login_message: This is the property of Example Corp. Do not login without express permission.
+    time_zone: America/Los_Angeles
+
+    name_servers:
+    - 8.8.8.8
+    ntp_servers:
+    - 137.190.2.4
+    snmp:
+        location: "Site 1"
+        contact: John Doe
+        polling:
+        - community: public
+    routes:
+    #   static:
+    #     172.0.0.0/8: 10.94.194.254
+
+############################################################################
+###   Physical interfaces name                                           ###
+############################################################################
+# topo:
+#     vqfx-01:
+#         port1: { name: ge-0/0/0,     peer: spine-01,       pport: port3 }
+#         port2: { name: ge-0/0/1,     peer: spine-02,       pport: port3 }
+#         port3: { name: ge-0/0/2,     peer: spine-03,       pport: port3 }
+#         port4: { name: ge-0/0/3,     peer: spine-04,       pport: port3 }
+#
+#     vqfx-02:
+#         port1: { name: ge-0/0/0,     peer: spine-01,       pport: port4 }
+#         port2: { name: ge-0/0/1,     peer: spine-02,       pport: port4 }
+#         port3: { name: ge-0/0/2,     peer: spine-03,       pport: port4 }
+#         port4: { name: ge-0/0/3,     peer: spine-04,       pport: port4 }
+
+
+
+############################################################################
+###   Physical wirring                                          ###
+############################################################################
+
+ravello_topology:
+  vqfx-01:
+    - link: dhcp-public
+    - link: 81
+    - link: 91
+    - link: 10
+    - link: 1
+    - link: 2
+
+  vqfx-02:
+    - link: dhcp-public
+    - link: 82
+    - link: 92
+    - link: 10
+    - link: 2
+    - link: 3
+  vqfx-03:
+    - link: dhcp-public
+    - link: 83
+    - link: 93
+    - link: 10
+    - link: 1
+    - link: 3
+
+  server-01:
+    - link: dhcp-public
+    - link: 10

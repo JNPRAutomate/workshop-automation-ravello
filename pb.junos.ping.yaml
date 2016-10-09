@@ -1,0 +1,18 @@
+---
+- name: junos_ping module
+  hosts: junos
+  connection: local
+  gather_facts: no
+  roles:
+    - Juniper.junos
+  tasks:
+    - name: "Ping Server from Junos"
+      junos_ping:
+        host: "{{ ansible_ssh_host }}"
+        port: "{{ netconf_port }}"
+        user: "{{ ansible_ssh_user }}"
+        passwd: "{{ ansible_ssh_pass }}"
+        dest_ip: 192.168.0.254
+      register: result
+
+    - debug: var=result

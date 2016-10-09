@@ -1,0 +1,29 @@
+---
+# This playbook will generate and apply configuration to all of the devices
+
+
+- name: Generate and Apply configuration
+  hosts: junos
+  connection: local
+  gather_facts: no
+  pre_tasks:
+    - include_vars: "{{ topology_file }}"
+  vars:
+    credential:
+      host: "{{ ansible_ssh_host }}"
+      port: "{{ netconf_port }}"
+      username: "{{ ansible_ssh_user }}"
+      password: "{{ ansible_ssh_pass }}"
+
+  tasks:
+    - template:
+        src: templates/vqfx.conf.j2
+        dest: "config/{{ inventory_hostname }}.conf"
+
+    - name: Pushing config ... please wait
+      junos_template:
+        src: "config/{{ inventory_hostname }}.conf"
+        action: overwrite
+        comment: "Applied by Ansible"
+        provider: "{{ credential }}"
+      register: result

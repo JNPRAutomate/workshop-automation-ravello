@@ -1,0 +1,20 @@
+---
+- name: junos_facts module
+  hosts: junos
+  connection: local
+  gather_facts: no
+  vars:
+    credentials:
+      host: "{{ ansible_ssh_host }}"
+      port: "{{ netconf_port }}"
+      username: "{{ ansible_ssh_user }}"
+      password: "{{ ansible_ssh_pass }}"
+  tasks:
+
+  - name: Collect device Facts
+    junos_ping:
+      config: no
+      provider: "{{ credentials }}"
+    register: result
+
+  - debug: var=result
