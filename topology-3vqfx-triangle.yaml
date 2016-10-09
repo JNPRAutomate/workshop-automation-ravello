@@ -13,7 +13,7 @@ junos_conf: "config/{{ inventory_hostname }}.conf"
 ################################################################################
 ravello:
   app_name: "Automation Workshop 3VQFX Triangle"
-  app_desc: >
+  app_documentation: >
     Application designed for Junos Automation Training
 
     The topology is composed of:
