@@ -6,5 +6,7 @@
   roles:
     - ravello.lib
     - ravello.vm_start
+  vars:
+    ansible_python_interpreter: /usr/local/bin/python
   pre_tasks:
     - include_vars: "{{ topology_file }}"
