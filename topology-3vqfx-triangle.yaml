@@ -12,7 +12,21 @@ junos_conf: "config/{{ inventory_hostname }}.conf"
 # please update these variable and the template as needed to match your environment
 ################################################################################
 ravello:
-  app_name: "Workshop NYC 20161012"
+  app_name: "Automation Workshop 3VQFX Triangle"
+  app_desc: >
+    Application designed for Junos Automation Training
+
+    The topology is composed of:
+    - 3 vqfx in triangle
+    - 1 ubuntu server with most popular Junos automation tools
+
+    ALL VMs have a public IP address and also are connected by an internal network
+    - For vqfx, internal network is on em3
+    - For ubuntu, internal network is on eth1 (192.168.0.254)
+
+    Login / Password
+    - For vqfx : root / Juniper
+    - For ubuntu : ubuntu / Juniper
 
 dhcp_mgmt_int: true   # Specific to Ravello
 
@@ -30,27 +44,6 @@ global:
         contact: John Doe
         polling:
         - community: public
-    routes:
-    #   static:
-    #     172.0.0.0/8: 10.94.194.254
-
-############################################################################
-###   Physical interfaces name                                           ###
-############################################################################
-# topo:
-#     vqfx-01:
-#         port1: { name: ge-0/0/0,     peer: spine-01,       pport: port3 }
-#         port2: { name: ge-0/0/1,     peer: spine-02,       pport: port3 }
-#         port3: { name: ge-0/0/2,     peer: spine-03,       pport: port3 }
-#         port4: { name: ge-0/0/3,     peer: spine-04,       pport: port3 }
-#
-#     vqfx-02:
-#         port1: { name: ge-0/0/0,     peer: spine-01,       pport: port4 }
-#         port2: { name: ge-0/0/1,     peer: spine-02,       pport: port4 }
-#         port3: { name: ge-0/0/2,     peer: spine-03,       pport: port4 }
-#         port4: { name: ge-0/0/3,     peer: spine-04,       pport: port4 }
-
-
 
 ############################################################################
 ###   Physical wirring                                          ###
